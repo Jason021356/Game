@@ -2,14 +2,64 @@
 <html lang="zh">
 
 <head>
-  <title>Tech Game</title>
-  <link rel="stylesheet" href="./gamepkg.css" />
+    <meta charset="UTF-8">
+    <title>Tech Game</title>
+    <style>
+        body,
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 
 <body>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.min.js"></script>
-  <script src="./gamepkgjs.js"></script>
-  <canvas width="885" height="789" style="width: 885px;height: 789px;">
+    <canvas id="renderCanvas"></canvas>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/babylon.max.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylon.glTF2FileLoader.js"></script>
+    <script>
+        var canvas = document.getElementById("renderCanvas")
+        var engine = new BABYLON.Engine(canvas, true);
+
+        var createScene = function () {
+            var scene = new BABYLON.Scene(engine);
+            const alpha = Math.PI / 4;
+            const beta = Math.PI / 3;
+            const radius = 8;
+            const target = new BABYLON.Vector3(0, 0, 0);
+
+            const camera = new BABYLON.ArcRotateCamera("Camera", alpha, beta, radius, target, scene);
+            camera.attachControl(canvas, true);
+
+            var earth = BABYLON.Mesh.CreateSphere("sphere", 1280, 1274200000, scene);
+            earth.position.x = 130000000;
+
+            var assetsManager = new BABYLON.AssetsManager(scene);
+            var glbtask = assetsManager.addMeshTask("tire", "", "/lightbomb.glb");
+
+            glbtask.onSuccess = function (task) {
+                task.loadedMeshes.forEach(function (mesh) {
+
+                })
+            }
+            assetsManager.load();
+
+            return scene;
+        }
+
+        engine.runRenderLoop(function () {
+            scene.render();
+        })
+
+        window.addEventListener("resize", function () {
+            engine.resize();
+        })
+        var scene = createScene();
+
+        var light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), scene);
+    </script>
+
 </body>
 
 </html>
